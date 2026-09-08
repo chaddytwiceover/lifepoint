@@ -1,5 +1,7 @@
 {
-  "name": "react-example",
+  "name": "lifepoint",
+  "description": "A mobile-first life gamification app with a personal pinboard, quests, XP, streaks, and achievements.",
+  "repository": { "type": "git", "url": "git+https://github.com/chaddytwiceover/lifepoint.git" },
   "private": true,
   "version": "0.0.0",
   "type": "module",
