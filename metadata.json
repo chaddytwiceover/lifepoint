@@ -1,0 +1,6 @@
+{
+  "name": "LifePoint",
+  "description": "Turn real life into progress you can see. Mobile-first life gamification with custom categories, quests, leveling, streaks, and achievements.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

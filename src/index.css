@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .font-handwriting {
+    font-family: 'Kalam', 'Patrick Hand', cursive, sans-serif;
+  }
+  .font-body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+}
+
+/* Room Wall & Corkboard Textures */
+.room-wall-bg {
+  background-color: #1e1b18;
+  background-image: 
+    radial-gradient(circle at 50% 10%, rgba(255, 237, 213, 0.08) 0%, transparent 60%),
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 0);
+  background-size: 100% 100%, 24px 24px;
+}
+
+.corkboard-surface {
+  background-color: #ba8d5d;
+  background-image: 
+    radial-gradient(#875c32 12%, transparent 13%),
+    radial-gradient(#6a4220 10%, transparent 11%),
+    radial-gradient(#dcb183 8%, transparent 9%),
+    radial-gradient(#4d2e13 14%, transparent 15%);
+  background-size: 40px 40px, 60px 60px, 30px 30px, 70px 70px;
+  background-position: 0 0, 25px 25px, 12px 12px, 35px 35px;
+}
+
+.wood-frame-border {
+  box-shadow: 
+    inset 0 0 0 6px #53331b,
+    inset 0 0 0 10px #381f0d,
+    inset 0 6px 18px rgba(0, 0, 0, 0.5),
+    0 12px 35px -5px rgba(0, 0, 0, 0.6);
+}
+
+.wood-shelf {
+  background: linear-gradient(180deg, #6b4324 0%, #4a2c14 60%, #2f1b0b 100%);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Sticky Note Shadows & Lift */
+.sticky-note-shadow {
+  box-shadow: 
+    0 4px 10px -2px rgba(45, 25, 10, 0.25),
+    0 2px 4px -1px rgba(45, 25, 10, 0.15),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.sticky-note-hover {
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+.sticky-note-hover:hover {
+  transform: translateY(-3px) scale(1.015) rotate(0deg) !important;
+  box-shadow: 
+    0 12px 20px -4px rgba(45, 25, 10, 0.3),
+    0 4px 8px -2px rgba(45, 25, 10, 0.2);
+  z-index: 10;
+}
+
+/* Push Pin 3D effect */
+.push-pin-red {
+  background: radial-gradient(circle at 35% 35%, #f87171, #dc2626 60%, #991b1b);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+.push-pin-blue {
+  background: radial-gradient(circle at 35% 35%, #60a5fa, #2563eb 60%, #1e40af);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+.push-pin-yellow {
+  background: radial-gradient(circle at 35% 35%, #fef08a, #eab308 60%, #a16207);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+.push-pin-green {
+  background: radial-gradient(circle at 35% 35%, #4ade80, #16a34a 60%, #166534);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+.push-pin-brass {
+  background: radial-gradient(circle at 35% 35%, #fde047, #ca8a04 60%, #713f12);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+/* Washi Tape Strip */
+.washi-tape-strip {
+  background: rgba(254, 249, 195, 0.65);
+  backdrop-filter: blur(1px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  border-left: 2px dashed rgba(161, 98, 7, 0.25);
+  border-right: 2px dashed rgba(161, 98, 7, 0.25);
+}
+
+/* Stamped Ink Effect */
+.stamp-completed {
+  border: 2.5px solid #dc2626;
+  color: #dc2626;
+  font-family: 'Kalam', cursive, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  transform: rotate(-10deg);
+  opacity: 0.88;
+}
