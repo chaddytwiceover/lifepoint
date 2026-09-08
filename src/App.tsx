@@ -12,6 +12,7 @@ import { QuestModal } from './components/quests/QuestModal';
 import { CategoryModal } from './components/categories/CategoryModal';
 import { CategoryDetailModal } from './components/categories/CategoryDetailModal';
 import { DeleteCategoryModal } from './components/categories/DeleteCategoryModal';
+import { Modal } from './components/common/Modal';
 import { Category, NavigationTab, Quest } from './types';
 
 function MainApp() {
@@ -30,6 +31,8 @@ function MainApp() {
   } = useLifePoint();
 
   const [currentTab, setCurrentTab] = useState<NavigationTab>('home');
+
+  const [deletingQuestId, setDeletingQuestId] = useState<string | null>(null);
 
   // Modal States
   const [questModalOpen, setQuestModalOpen] = useState(false);
@@ -167,7 +170,7 @@ function MainApp() {
               onOpenCreateCategory={handleOpenCreateCategory}
               onOpenCategoryDetail={(cat) => setDetailCategory(cat)}
               onEditQuest={handleEditQuest}
-              onDeleteQuest={deleteQuest}
+              onDeleteQuest={setDeletingQuestId}
               onNavigateTab={(tab) => setCurrentTab(tab)}
             />
           )}
@@ -176,7 +179,7 @@ function MainApp() {
             <QuestsPage
               onOpenCreateQuest={handleOpenCreateQuest}
               onEditQuest={handleEditQuest}
-              onDeleteQuest={deleteQuest}
+              onDeleteQuest={setDeletingQuestId}
             />
           )}
 
@@ -200,6 +203,14 @@ function MainApp() {
           </div>
         </div>
       </main>
+
+      <Modal isOpen={Boolean(deletingQuestId)} onClose={() => setDeletingQuestId(null)} title="Delete quest?" description="This removes the quest from your board. XP already earned is kept." maxWidth="sm">
+        <p className="mb-5 font-medium break-words">{state.quests.find(q => q.id === deletingQuestId)?.title}</p>
+        <div className="flex justify-end gap-3">
+          <button type="button" className="px-4 py-2 rounded-xl border border-stone-300" onClick={() => setDeletingQuestId(null)}>Keep quest</button>
+          <button type="button" className="px-4 py-2 rounded-xl bg-rose-700 text-white" onClick={() => { if (deletingQuestId) deleteQuest(deletingQuestId); setDeletingQuestId(null); }}>Delete quest</button>
+        </div>
+      </Modal>
 
       {/* Quest Create/Edit Modal */}
       <QuestModal
@@ -239,7 +250,7 @@ function MainApp() {
           setDetailCategory(null);
           handleEditQuest(quest);
         }}
-        onDeleteQuest={deleteQuest}
+        onDeleteQuest={setDeletingQuestId}
       />
 
       {/* Delete Category Confirmation Modal */}

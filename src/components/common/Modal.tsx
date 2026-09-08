@@ -1,5 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useId } from 'react';
 import { X } from 'lucide-react';
+
+const openDialogs: HTMLDivElement[] = [];
+let originalBodyOverflow = '';
 
 interface ModalProps {
   isOpen: boolean;
@@ -18,6 +21,10 @@ export const Modal: React.FC<ModalProps> = ({
   children,
   maxWidth = 'md',
 }) => {
+  const titleId = useId();
+  const descriptionId = useId();
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
   const dialogRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedElement = useRef<HTMLElement | null>(null);
 
@@ -25,9 +32,23 @@ export const Modal: React.FC<ModalProps> = ({
     if (isOpen) {
       previouslyFocusedElement.current = document.activeElement as HTMLElement;
 
+      const dialog = dialogRef.current! as HTMLDivElement;
+      if (!openDialogs.length) originalBodyOverflow = document.body.style.overflow;
+      openDialogs.push(dialog);
+      dialog.parentElement!.style.zIndex = String(50 + openDialogs.length);
       const handleKeyDown = (e: KeyboardEvent) => {
+        if (openDialogs.at(-1) !== dialog) return;
         if (e.key === 'Escape') {
-          onClose();
+          e.preventDefault();
+          closeRef.current();
+        }
+        if (e.key === 'Tab') {
+          const items = Array.from(dialog.querySelectorAll<HTMLElement>('button:not(:disabled), [href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex="0"]')).filter(el => el.getClientRects().length > 0);
+          const first = items[0];
+          const last = items[items.length - 1];
+          if (!first) { e.preventDefault(); dialog.focus(); }
+          else if (e.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
         }
       };
 
@@ -35,7 +56,7 @@ export const Modal: React.FC<ModalProps> = ({
       document.body.style.overflow = 'hidden';
 
       // Focus first focusable element inside modal
-      setTimeout(() => {
+      const focusTimer = setTimeout(() => {
         const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
           'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
         );
@@ -46,13 +67,15 @@ export const Modal: React.FC<ModalProps> = ({
 
       return () => {
         window.removeEventListener('keydown', handleKeyDown);
-        document.body.style.overflow = '';
+        clearTimeout(focusTimer);
+        openDialogs.splice(openDialogs.indexOf(dialog), 1);
+        document.body.style.overflow = openDialogs.length ? 'hidden' : originalBodyOverflow;
         if (previouslyFocusedElement.current) {
           previouslyFocusedElement.current.focus();
         }
       };
     }
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -73,8 +96,9 @@ export const Modal: React.FC<ModalProps> = ({
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modal-title"
-        aria-describedby={description ? 'modal-description' : undefined}
+        tabIndex={-1}
+        aria-labelledby={titleId}
+        aria-describedby={description ? descriptionId : undefined}
         className={`w-full ${maxWidthClasses} bg-[#fdfbf7] border-2 border-stone-300 rounded-t-3xl sm:rounded-2xl shadow-2xl p-5 sm:p-6 text-stone-900 max-h-[90vh] overflow-y-auto transform transition-all duration-200 relative`}
         id={`modal-${title.toLowerCase().replace(/\s+/g, '-')}`}
       >
@@ -83,11 +107,11 @@ export const Modal: React.FC<ModalProps> = ({
 
         <div className="flex items-start justify-between gap-4 mb-4 pb-3 border-b-2 border-stone-200">
           <div>
-            <h2 id="modal-title" className="text-xl sm:text-2xl font-handwriting font-bold tracking-tight text-stone-900">
+            <h2 id={titleId} className="text-xl sm:text-2xl font-handwriting font-bold tracking-tight text-stone-900">
               {title}
             </h2>
             {description && (
-              <p id="modal-description" className="text-xs sm:text-sm text-stone-600 mt-0.5 font-body">
+              <p id={descriptionId} className="text-xs sm:text-sm text-stone-600 mt-0.5 font-body">
                 {description}
               </p>
             )}
