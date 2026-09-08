@@ -42,8 +42,8 @@ export const QuestsPage: React.FC<QuestsPageProps> = ({
 
     // Search filter
     if (searchQuery.trim()) {
-      const match = q.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (q.description && q.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      const match = q.title.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+        (q.description && q.description.toLowerCase().includes(searchQuery.trim().toLowerCase()));
       if (!match) return false;
     }
 
@@ -61,7 +61,7 @@ export const QuestsPage: React.FC<QuestsPageProps> = ({
           <div className="flex items-center gap-2 mb-0.5">
             <div className={`w-3 h-3 rounded-full ${getPinClass('red')}`} />
             <h1 className="text-2xl sm:text-3xl font-handwriting font-bold text-stone-900 tracking-tight">
-              Quests Bulletin Board
+              Your quests
             </h1>
           </div>
           <p className="text-xs sm:text-sm text-stone-600 font-body">
@@ -76,7 +76,7 @@ export const QuestsPage: React.FC<QuestsPageProps> = ({
           className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-handwriting font-bold bg-[#fef08a] hover:bg-[#fde047] active:bg-[#facc15] text-stone-900 border-2 border-amber-400 shadow-md hover:shadow-lg transition-all shrink-0 self-start sm:self-auto cursor-pointer"
         >
           <Plus size={16} strokeWidth={2.5} />
-          <span>+ Tear New Note</span>
+          <span>Add quest</span>
         </button>
       </div>
 
@@ -88,6 +88,7 @@ export const QuestsPage: React.FC<QuestsPageProps> = ({
             <button
               type="button"
               onClick={() => setStatusFilter('active')}
+              aria-pressed={statusFilter === 'active'}
               className={`px-3 py-1.5 rounded-lg transition-all text-sm cursor-pointer ${
                 statusFilter === 'active'
                   ? 'bg-[#fef9c3] text-stone-900 border border-amber-300 shadow-xs'
@@ -99,6 +100,7 @@ export const QuestsPage: React.FC<QuestsPageProps> = ({
             <button
               type="button"
               onClick={() => setStatusFilter('completed')}
+              aria-pressed={statusFilter === 'completed'}
               className={`px-3 py-1.5 rounded-lg transition-all text-sm cursor-pointer ${
                 statusFilter === 'completed'
                   ? 'bg-[#dcfce7] text-stone-900 border border-emerald-300 shadow-xs'
@@ -110,6 +112,7 @@ export const QuestsPage: React.FC<QuestsPageProps> = ({
             <button
               type="button"
               onClick={() => setStatusFilter('all')}
+              aria-pressed={statusFilter === 'all'}
               className={`px-3 py-1.5 rounded-lg transition-all text-sm cursor-pointer ${
                 statusFilter === 'all'
                   ? 'bg-[#e0f2fe] text-stone-900 border border-sky-300 shadow-xs'
@@ -145,7 +148,8 @@ export const QuestsPage: React.FC<QuestsPageProps> = ({
         <div className="relative">
           <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500" />
           <input
-            type="text"
+            type="search"
+            aria-label="Search quests"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search notes by title or keywords..."
@@ -187,7 +191,12 @@ export const QuestsPage: React.FC<QuestsPageProps> = ({
               ? 'Notes you check off will stay here as completed records.'
               : 'Tear off a new sticky note to get started on your goals.'}
           </p>
-          {statusFilter !== 'completed' && !searchQuery && (
+          {(searchQuery || categoryFilter !== 'all') && (
+            <button type="button" className="mt-4 px-4 py-2 rounded-xl border border-stone-400 bg-white font-medium" onClick={() => { setSearchQuery(''); setCategoryFilter('all'); }}>
+              Clear filters
+            </button>
+          )}
+          {statusFilter !== 'completed' && !searchQuery && categoryFilter === 'all' && (
             <button
               type="button"
               onClick={() => onOpenCreateQuest()}

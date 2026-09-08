@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Category, Quest } from '../../types';
 import { Icon } from '../common/Icon';
 import { Check, Edit2, MoreVertical, Repeat, Trash2 } from 'lucide-react';
@@ -21,6 +21,21 @@ export const QuestCard: React.FC<QuestCardProps> = ({
 }) => {
   const [isCompleting, setIsCompleting] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!menuOpen) return;
+    menuRef.current?.querySelector('button')?.focus();
+    const close = (event: PointerEvent) => {
+      if (!menuRef.current?.contains(event.target as Node) && !optionsRef.current?.contains(event.target as Node)) setMenuOpen(false);
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') { setMenuOpen(false); optionsRef.current?.focus(); }
+    };
+    document.addEventListener('pointerdown', close);
+    document.addEventListener('keydown', escape);
+    return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', escape); };
+  }, [menuOpen]);
 
   const isCompleted = quest.status === 'completed';
   const stickyStyle = getStickyStyle(quest.categoryId || quest.id);
@@ -40,7 +55,7 @@ export const QuestCard: React.FC<QuestCardProps> = ({
   return (
     <div
       id={`quest-card-${quest.id}`}
-      className={`group relative rounded-xl transition-all duration-200 p-4 sm:p-5 sticky-note-shadow sticky-note-hover ${stickyStyle.angle} ${
+      className={`quest-card ${menuOpen ? 'menu-open' : ''} group relative rounded-xl transition-all duration-200 p-4 sm:p-5 sticky-note-shadow sticky-note-hover ${stickyStyle.angle} ${
         isCompleted ? 'opacity-85' : ''
       }`}
       style={{
@@ -79,7 +94,7 @@ export const QuestCard: React.FC<QuestCardProps> = ({
               ? `Quest completed: ${quest.title}`
               : `Complete quest: ${quest.title}`
           }
-          className={`shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center border-2 transition-all duration-200 mt-0.5 ${
+          className={`shrink-0 w-11 h-11 rounded-lg flex items-center justify-center border-2 transition-all duration-200 mt-0.5 ${
             isCompleted
               ? 'border-emerald-700 bg-emerald-600 text-white shadow-xs'
               : 'border-stone-500/70 bg-white/80 text-stone-700 hover:border-stone-800 hover:bg-white hover:scale-105 active:scale-95 cursor-pointer shadow-xs'
@@ -147,21 +162,18 @@ export const QuestCard: React.FC<QuestCardProps> = ({
         <div className="relative shrink-0">
           <button
             type="button"
+            ref={optionsRef}
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label={`Options for quest ${quest.title}`}
             aria-expanded={menuOpen}
-            className="p-1 rounded-md text-stone-500 hover:text-stone-900 hover:bg-black/5 transition-colors focus-visible:ring-2 focus-visible:ring-stone-800 focus-visible:outline-hidden"
+            className="p-2 min-w-11 min-h-11 rounded-md text-stone-500 hover:text-stone-900 hover:bg-black/5 transition-colors focus-visible:ring-2 focus-visible:ring-stone-800 focus-visible:outline-hidden"
           >
             <MoreVertical size={16} />
           </button>
 
           {menuOpen && (
             <>
-              <div
-                className="fixed inset-0 z-20"
-                onClick={() => setMenuOpen(false)}
-              />
-              <div className="absolute right-0 top-7 z-30 w-32 bg-stone-50 border border-stone-300 rounded-lg shadow-xl py-1 text-xs text-stone-800">
+              <div ref={menuRef} className="absolute right-0 top-12 z-30 w-32 bg-stone-50 border border-stone-300 rounded-lg shadow-xl py-1 text-xs text-stone-800">
                 <button
                   type="button"
                   onClick={() => {
@@ -171,7 +183,7 @@ export const QuestCard: React.FC<QuestCardProps> = ({
                   className="w-full text-left px-3 py-2 text-stone-800 hover:bg-amber-100 flex items-center gap-2 font-medium"
                 >
                   <Edit2 size={13} className="text-stone-600" />
-                  <span>Edit Note</span>
+                  <span>Edit quest</span>
                 </button>
                 <button
                   type="button"
@@ -182,7 +194,7 @@ export const QuestCard: React.FC<QuestCardProps> = ({
                   className="w-full text-left px-3 py-2 text-rose-700 hover:bg-rose-100 flex items-center gap-2 font-medium"
                 >
                   <Trash2 size={13} className="text-rose-600" />
-                  <span>Unpin Note</span>
+                  <span>Delete quest</span>
                 </button>
               </div>
             </>

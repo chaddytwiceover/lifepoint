@@ -65,7 +65,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <div className="flex items-center gap-1.5 mb-1">
               <span className="text-xs uppercase tracking-wider font-bold text-amber-800 flex items-center gap-1 font-body">
                 <Sparkles size={12} className="text-amber-600" />
-                Room Bulletin Board
+                Your everyday progress
               </span>
             </div>
             <h1 id="player-overview-heading" className="text-2xl sm:text-3xl font-handwriting font-bold text-stone-900 tracking-tight">
@@ -102,15 +102,15 @@ export const HomePage: React.FC<HomePageProps> = ({
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold font-handwriting bg-[#fef08a] hover:bg-[#fde047] active:bg-[#facc15] text-stone-900 border-2 border-amber-400 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer"
             >
               <Plus size={16} strokeWidth={2.5} />
-              <span>+ Pin Note</span>
+              <span>Add quest</span>
             </button>
           </div>
         </div>
 
         {/* Player Level & XP Progress Styled like a Wooden Ruler / Progress Bar */}
         <div className="bg-[#f5efe4] border border-stone-300 rounded-xl p-3.5 sm:p-4">
-          <div className="flex justify-between items-baseline mb-2">
-            <div className="flex items-baseline gap-2">
+          <div className="flex flex-wrap gap-2 justify-between items-baseline mb-2">
+            <div className="flex flex-wrap items-baseline gap-2">
               <span className="text-lg font-handwriting font-bold text-stone-900">
                 Level {playerProgress.currentLevel}
               </span>
@@ -123,7 +123,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </span>
           </div>
 
-          <div className="w-full bg-stone-300 rounded-full h-3 overflow-hidden border border-stone-400 p-0.5">
+          <div role="progressbar" aria-label="Player level progress" aria-valuenow={Math.round(playerProgress.progressPercent)} aria-valuemin={0} aria-valuemax={100} className="w-full bg-stone-300 rounded-full h-3 overflow-hidden border border-stone-400 p-0.5">
             <div
               className="bg-amber-600 h-full rounded-full transition-all duration-500 shadow-inner"
               style={{ width: `${playerProgress.progressPercent}%` }}
@@ -132,13 +132,13 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* Active Sticky Notes Board Section */}
+      {/* Active quests Board Section */}
       <section aria-labelledby="active-quests-heading">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <div className={`w-3 h-3 rounded-full ${getPinClass('red')}`} />
             <h2 id="active-quests-heading" className="text-lg font-handwriting font-bold text-amber-100 tracking-wide drop-shadow-sm">
-              Active Sticky Notes
+              Active quests
             </h2>
             <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-stone-900/80 text-amber-200 border border-amber-400/40">
               {activeQuests.length}
@@ -151,7 +151,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               onClick={() => onNavigateTab('quests')}
               className="text-xs sm:text-sm font-handwriting font-bold text-amber-200 hover:text-amber-100 flex items-center gap-1 transition-colors drop-shadow-xs"
             >
-              <span>View all notes</span>
+              <span>View all quests</span>
               <ArrowRight size={14} />
             </button>
           )}
@@ -211,7 +211,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 onClick={() => onNavigateTab('stats')}
                 className="text-xs sm:text-sm font-handwriting font-bold text-amber-200 hover:text-amber-100 flex items-center gap-1 transition-colors"
               >
-                <span>Manage Cards</span>
+                <span>Manage</span>
                 <ArrowRight size={14} />
               </button>
             )}
@@ -305,7 +305,7 @@ export const HomePage: React.FC<HomePageProps> = ({
         <div className="flex items-center gap-2 mb-3">
           <div className={`w-3 h-3 rounded-full ${getPinClass('yellow')}`} />
           <h2 id="recent-activity-heading" className="text-lg font-handwriting font-bold text-amber-100 tracking-wide drop-shadow-sm">
-            Board Log
+            Recent activity
           </h2>
         </div>
         <RecentActivityFeed activities={state.activity} limit={6} />

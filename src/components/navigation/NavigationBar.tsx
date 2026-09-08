@@ -46,7 +46,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
     },
     {
       id: 'settings' as const,
-      label: 'Desk',
+      label: 'Settings',
       icon: Settings,
       color: 'bg-[#ffedd5] text-stone-900 border-[#fed7aa]',
       pin: 'brass' as const,
@@ -74,7 +74,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
           </div>
 
           {/* Sticky Note Tabs */}
-          <nav className="flex items-end gap-2 pt-2">
+          <nav aria-label="Main navigation" className="flex items-end gap-2 pt-2">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = currentTab === tab.id;
@@ -83,6 +83,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
                   key={tab.id}
                   type="button"
                   id={`nav-desktop-${tab.id}`}
+                  aria-current={isActive ? 'page' : undefined}
                   onClick={() => onSelectTab(tab.id)}
                   className={`flex items-center gap-1.5 px-3.5 py-2 rounded-t-xl text-xs font-bold font-handwriting text-base transition-all relative cursor-pointer border-t-2 border-x-2 ${
                     tab.color
@@ -116,7 +117,7 @@ export const NavigationBar: React.FC<NavigationBarProps> = ({
       {/* Mobile Bottom Navigation Bar (Wooden desk rail with mini sticky tabs) */}
       <nav
         aria-label="Mobile Navigation"
-        className="sm:hidden fixed bottom-0 left-0 right-0 z-40 wood-shelf border-t-4 border-[#3d2412] px-2 py-1 shadow-2xl"
+        className="mobile-navigation sm:hidden fixed bottom-0 left-0 right-0 z-40 wood-shelf border-t-4 border-[#3d2412] px-2 py-1 shadow-2xl"
       >
         <div className="flex items-center justify-around">
           {tabs.map((tab) => {
